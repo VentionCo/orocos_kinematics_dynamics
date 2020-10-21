@@ -7,6 +7,7 @@
 #include "chainiksolver.hpp"
 #include "chainiksolverpos_lma.hpp"
 #include "chainiksolverpos_nr.hpp"
+#include "frames.hpp"
 #include <Eigen/Core>
 #include <vector>
 
@@ -39,6 +40,7 @@ EMSCRIPTEN_BINDINGS (c) {
 
   class_<KDL::Joint>("Joint")
     .constructor<KDL::Joint::JointType>()
+    .constructor<KDL::Vector, KDL::Vector, KDL::Joint::JointType>()
     .function("getNrOfJoints", &KDL::Chain::getNrOfJoints)
     ;
 

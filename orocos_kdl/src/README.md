@@ -30,6 +30,12 @@ emcc --bind -o wasm.js wasm.cpp chain.cpp segment.cpp joint.cpp frames.cpp rigid
     int ret = iksolverpos.CartToJnt(q_init,F_dest,q);
   ```
 
+  in a self contained file
   ```sh
   emcc --bind -o wasm.js wasm.cpp chain.cpp segment.cpp joint.cpp frames.cpp rigidbodyinertia.cpp rotationalinertia.cpp chainfksolverpos_recursive.cpp framevel.cpp frameacc.cpp jntarray.cpp jntarrayvel.cpp jntarrayacc.cpp chainiksolvervel_pinv.cpp chainjnttojacsolver.cpp jacobian.cpp utilities/SVD_HH.cpp chainiksolverpos_lma.cpp utilities/utility.cxx -I ../../../eigen -s LLD_REPORT_UNDEFINED --no-entry && python -m SimpleHTTPServer
+  ```
+
+  in a module
+  ```sh
+  emcc --bind -o orocos-kdl.js wasm.cpp chain.cpp segment.cpp joint.cpp frames.cpp rigidbodyinertia.cpp rotationalinertia.cpp chainfksolverpos_recursive.cpp framevel.cpp frameacc.cpp jntarray.cpp jntarrayvel.cpp jntarrayacc.cpp chainiksolvervel_pinv.cpp chainjnttojacsolver.cpp jacobian.cpp utilities/SVD_HH.cpp chainiksolverpos_lma.cpp utilities/utility.cxx -I ../../../eigen -s LLD_REPORT_UNDEFINED -s MODULARIZE=1 -s 'EXPORT_NAME="OrocosKDL"' -s DISABLE_EXCEPTION_CATCHING=0 --no-entry
   ```
