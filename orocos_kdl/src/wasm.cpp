@@ -26,6 +26,11 @@ const std::vector<double> getStdVectorFromJntArray(const KDL::JntArray& array)
   return v;
 };
 
+KDL::Frame Frame_mul(const KDL::Frame& lhs,const KDL::Frame& rhs)
+{
+  return KDL::Frame(lhs.M*rhs.M,lhs.M*rhs.p+lhs.p);
+};
+
 EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Chain>("Chain")
     .constructor()
@@ -45,15 +50,24 @@ EMSCRIPTEN_BINDINGS (c) {
     ;
 
   class_<KDL::Frame>("Frame")
-    .constructor<KDL::Vector>()
+    .constructor<KDL::Rotation, KDL::Vector>()
+    .class_function("DH", &KDL::Frame::DH)
+    ;
+
+  class_<KDL::Rotation>("Rotation")
+    .class_function("Identity", &KDL::Rotation::Identity)
+    .class_function("EulerZYX", &KDL::Rotation::EulerZYX)
     ;
 
   class_<KDL::Vector>("Vector")
     .constructor<double, double, double>()
+    .class_function("Zero", &KDL::Vector::Zero)
     ;
 
   enum_<KDL::Joint::JointType>("JointType")
+    .value("None", KDL::Joint::None)
     .value("RotX", KDL::Joint::RotX)
+    .value("RotY", KDL::Joint::RotY)
     .value("RotZ", KDL::Joint::RotZ)
     ;
 
@@ -81,4 +95,7 @@ EMSCRIPTEN_BINDINGS (c) {
     ;
 
   function("getStdVectorFromJntArray", &getStdVectorFromJntArray);
+
+  // replaces: Frame operator *(const Frame& lhs,const Frame& rhs)
+  function("Frame_mul", &Frame_mul);
 }
