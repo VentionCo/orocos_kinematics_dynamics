@@ -1,15 +1,13 @@
+#include <Eigen/Core>
+#include <vector>
+
 #include "chain.hpp"
+#include "frames.hpp"
 #include "solveri.hpp"
 #include "chainfksolver.hpp"
 #include "chainfksolverpos_recursive.hpp"
 #include "chainiksolver.hpp"
-#include "chainiksolvervel_pinv.hpp"
-#include "chainiksolver.hpp"
 #include "chainiksolverpos_lma.hpp"
-#include "chainiksolverpos_nr.hpp"
-#include "frames.hpp"
-#include <Eigen/Core>
-#include <vector>
 
 #include "emscripten/bind.h"
 
@@ -26,10 +24,27 @@ const std::vector<double> getStdVectorFromJntArray(const KDL::JntArray& array)
   return v;
 };
 
+const std::vector<double> getStdVectorFromVector(const KDL::Vector& vector)
+{
+  std::vector<double> v;
+
+  for (int i = 0; i < sizeof(vector.data); i++) {
+    v.push_back(vector.data[i]);
+  }
+
+  return v;
+};
+
+
 KDL::Frame Frame_mul(const KDL::Frame& lhs,const KDL::Frame& rhs)
 {
   return KDL::Frame(lhs.M*rhs.M,lhs.M*rhs.p+lhs.p);
 };
+
+KDL::Vector Frame_getPositionVector(const KDL::Frame& frame)
+{
+  return frame.p;
+}
 
 EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Chain>("Chain")
@@ -52,6 +67,7 @@ EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Frame>("Frame")
     .constructor<KDL::Rotation, KDL::Vector>()
     .class_function("DH", &KDL::Frame::DH)
+    .function("Make4x4", &KDL::Frame::Make4x4, allow_raw_pointers())
     ;
 
   class_<KDL::Rotation>("Rotation")
@@ -72,14 +88,11 @@ EMSCRIPTEN_BINDINGS (c) {
     ;
 
   class_<KDL::SolverI>("SolverI");
+
   class_<KDL::ChainFkSolverPos, base<KDL::SolverI>>("ChainFkSolverPos");
   class_<KDL::ChainFkSolverPos_recursive, base<KDL::ChainFkSolverPos>>("ChainFkSolverPos_recursive")
-    .constructor<KDL::Chain>()
-    ;
-
-  class_<KDL::ChainIkSolverVel, base<KDL::SolverI>>("ChainIkSolverVel");
-  class_<KDL::ChainIkSolverVel_pinv, base<KDL::ChainIkSolverVel>>("ChainIkSolverVel_pinv")
-    .constructor<KDL::Chain>()
+    .constructor<KDL::Chain&>()
+    .function("JntToCart", &KDL::ChainFkSolverPos_recursive::JntToCart)
     ;
 
   class_<KDL::ChainIkSolverPos, base<KDL::SolverI>>("ChainIkSolverPos");
@@ -94,8 +107,10 @@ EMSCRIPTEN_BINDINGS (c) {
     .property("data", &KDL::JntArray::data)
     ;
 
+  function("getStdVectorFromVector", &getStdVectorFromVector);
   function("getStdVectorFromJntArray", &getStdVectorFromJntArray);
 
   // replaces: Frame operator *(const Frame& lhs,const Frame& rhs)
   function("Frame_mul", &Frame_mul);
+  function("Frame_getPositionVector", &Frame_getPositionVector);
 }

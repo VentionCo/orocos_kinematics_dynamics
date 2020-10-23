@@ -1,7 +1,3 @@
-```sh
-emcc --bind -o wasm.js wasm.cpp chain.cpp segment.cpp joint.cpp frames.cpp rigidbodyinertia.cpp rotationalinertia.cpp -I ../../../eigen -s LLD_REPORT_UNDEFINED --no-entry
-```
-
 #### TODO
 - try: from https://orocos.org/kdl/examples.html#comment-1724
 

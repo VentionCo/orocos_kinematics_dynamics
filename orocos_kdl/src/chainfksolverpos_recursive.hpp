@@ -40,7 +40,7 @@ namespace KDL {
         ~ChainFkSolverPos_recursive();
 
         virtual int JntToCart(const JntArray& q_in, Frame& p_out, int segmentNr=-1);
-        virtual int JntToCart(const JntArray& q_in, std::vector<Frame>& p_out, int segmentNr=-1);
+        // virtual int JntToCart(const JntArray& q_in, std::vector<Frame>& p_out, int segmentNr=-1);
 
         virtual void updateInternalDataStructures() {};
 

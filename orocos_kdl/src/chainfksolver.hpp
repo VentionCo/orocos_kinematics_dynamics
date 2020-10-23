@@ -59,7 +59,7 @@ namespace KDL {
          *
          * @return if < 0 something went wrong
          */
-        virtual int JntToCart(const JntArray& q_in, std::vector<KDL::Frame>& p_out,int segmentNr=-1)=0;
+        // virtual int JntToCart(const JntArray& q_in, std::vector<KDL::Frame>& p_out,int segmentNr=-1)=0;
 
         virtual void updateInternalDataStructures()=0;
         virtual ~ChainFkSolverPos(){};
