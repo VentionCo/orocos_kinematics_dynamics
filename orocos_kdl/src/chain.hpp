@@ -85,15 +85,15 @@ namespace KDL {
          */
         const Segment& getSegment(unsigned int nr)const;
 
-        /**
-         * Request the nr'd segment of the chain. There is no boundary
-         * checking.
-         *
-         * @param nr the nr of the segment starting from 0
-         *
-         * @return a reference to the nr'd segment
-         */
-        Segment& getSegment(unsigned int nr);
+        // /**
+        //  * Request the nr'd segment of the chain. There is no boundary
+        //  * checking.
+        //  *
+        //  * @param nr the nr of the segment starting from 0
+        //  *
+        //  * @return a reference to the nr'd segment
+        //  */
+        // Segment& getSegment(unsigned int nr);
 
         virtual ~Chain();
     };

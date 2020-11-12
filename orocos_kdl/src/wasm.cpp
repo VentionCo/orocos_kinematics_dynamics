@@ -28,7 +28,7 @@ const std::vector<double> getStdVectorFromVector(const KDL::Vector& vector)
 {
   std::vector<double> v;
 
-  for (int i = 0; i < sizeof(vector.data); i++) {
+  for (int i = 0; i < sizeof(vector.data) / sizeof(vector.data[0]); i++) {
     v.push_back(vector.data[i]);
   }
 
@@ -46,16 +46,30 @@ KDL::Vector Frame_getPositionVector(const KDL::Frame& frame)
   return frame.p;
 }
 
+KDL::Rotation Frame_getRotation(const KDL::Frame& frame)
+{
+  return frame.M;
+}
+
+// KDL::Rotation Segment_getPose(const KDL::Segment& segment)
+// {
+//   return frame.M;
+// }
+
 EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Chain>("Chain")
     .constructor()
     .function("addChain", &KDL::Chain::addChain)
     .function("addSegment", &KDL::Chain::addSegment)
+    .function("getSegment", &KDL::Chain::getSegment)
     ;
 
   class_<KDL::Segment>("Segment")
     .constructor<KDL::Joint>()
     .constructor<KDL::Joint, KDL::Frame>()
+    .function("pose", &KDL::Segment::pose)
+    .function("getJoint", &KDL::Segment::getJoint)
+    .function("getFrameToTip", &KDL::Segment::getFrameToTip)
     ;
 
   class_<KDL::Joint>("Joint")
@@ -71,8 +85,13 @@ EMSCRIPTEN_BINDINGS (c) {
     ;
 
   class_<KDL::Rotation>("Rotation")
+    .constructor<KDL::Vector, KDL::Vector, KDL::Vector>()
     .class_function("Identity", &KDL::Rotation::Identity)
     .class_function("EulerZYX", &KDL::Rotation::EulerZYX)
+    .class_function("RotX", &KDL::Rotation::RotX)
+    .class_function("RotY", &KDL::Rotation::RotY)
+    .class_function("RotZ", &KDL::Rotation::RotZ)
+    .function("GetRot", &KDL::Rotation::GetRot)
     ;
 
   class_<KDL::Vector>("Vector")
@@ -113,4 +132,5 @@ EMSCRIPTEN_BINDINGS (c) {
   // replaces: Frame operator *(const Frame& lhs,const Frame& rhs)
   function("Frame_mul", &Frame_mul);
   function("Frame_getPositionVector", &Frame_getPositionVector);
+  function("Frame_getRotation", &Frame_getRotation);
 }
