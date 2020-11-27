@@ -35,6 +35,16 @@ const std::vector<double> getStdVectorFromVector(const KDL::Vector& vector)
   return v;
 };
 
+const std::vector<double> getStdVectorFromRotation(const KDL::Rotation& rotation)
+{
+  std::vector<double> v;
+
+  for (int i = 0; i < sizeof(rotation.data) / sizeof(rotation.data[0]); i++) {
+    v.push_back(rotation.data[i]);
+  }
+
+  return v;
+};
 
 KDL::Frame Frame_mul(const KDL::Frame& lhs,const KDL::Frame& rhs)
 {
@@ -50,11 +60,6 @@ KDL::Rotation Frame_getRotation(const KDL::Frame& frame)
 {
   return frame.M;
 }
-
-// KDL::Rotation Segment_getPose(const KDL::Segment& segment)
-// {
-//   return frame.M;
-// }
 
 EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Chain>("Chain")
@@ -128,6 +133,7 @@ EMSCRIPTEN_BINDINGS (c) {
 
   function("getStdVectorFromVector", &getStdVectorFromVector);
   function("getStdVectorFromJntArray", &getStdVectorFromJntArray);
+  function("getStdVectorFromRotation", &getStdVectorFromRotation);
 
   // replaces: Frame operator *(const Frame& lhs,const Frame& rhs)
   function("Frame_mul", &Frame_mul);
