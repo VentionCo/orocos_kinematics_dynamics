@@ -61,6 +61,11 @@ KDL::Rotation Frame_getRotation(const KDL::Frame& frame)
   return frame.M;
 }
 
+void setJntArrayDataAtIndex(KDL::JntArray &array, unsigned int i, double jnt_value)
+{
+  array.data[i] = jnt_value;
+};
+
 EMSCRIPTEN_BINDINGS (c) {
   class_<KDL::Chain>("Chain")
     .constructor()
@@ -134,6 +139,7 @@ EMSCRIPTEN_BINDINGS (c) {
   function("getStdVectorFromVector", &getStdVectorFromVector);
   function("getStdVectorFromJntArray", &getStdVectorFromJntArray);
   function("getStdVectorFromRotation", &getStdVectorFromRotation);
+  function("setJntArrayDataAtIndex", &setJntArrayDataAtIndex);
 
   // replaces: Frame operator *(const Frame& lhs,const Frame& rhs)
   function("Frame_mul", &Frame_mul);
