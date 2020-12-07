@@ -86,6 +86,7 @@ EMSCRIPTEN_BINDINGS (c) {
     .constructor<KDL::Joint::JointType>()
     .constructor<KDL::Vector, KDL::Vector, KDL::Joint::JointType>()
     .function("getNrOfJoints", &KDL::Chain::getNrOfJoints)
+    .function("getNrOfSegments", &KDL::Chain::getNrOfSegments)
     ;
 
   class_<KDL::Frame>("Frame")
